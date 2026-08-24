@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse — YouTube Momentum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D0F14;
+    --surface: #151822;
+    --surface-2: #1D212C;
+    --line: #262B38;
+    --text: #EDEFF4;
+    --text-muted: #8A8F9C;
+    --gold: #E8A33D;
+    --teal: #2DD4BF;
+    --coral: #FF6B5E;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Ticker ---- */
+  .ticker-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 10px 0;
+  }
+  .ticker {
+    display: inline-block;
+    animation: scroll 40s linear infinite;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .ticker-wrap:hover .ticker { animation-play-state: paused; }
+  .ticker-item { display: inline-flex; align-items: center; margin-right: 40px; }
+  .ticker-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); margin-right: 8px; }
+  .ticker-item .title { color: var(--text); margin-right: 10px; }
+  .ticker-item .delta { color: var(--teal); font-weight: 700; }
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ---- Header ---- */
+  header {
+    padding: 48px 32px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 52px);
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  h1 span { color: var(--gold); }
+  .sub { color: var(--text-muted); font-size: 15px; max-width: 560px; line-height: 1.5; }
+
+  /* ---- Tabs ---- */
+  .tabs {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .tab {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .tab:hover { border-color: var(--gold); color: var(--text); }
+  .tab.active { background: var(--gold); color: #16130A; border-color: var(--gold); font-weight: 700; }
+
+  /* ---- Leaderboard ---- */
+  main { max-width: 1100px; margin: 0 auto; padding: 0 32px 64px; }
+  .board-title { font-family: var(--font-display); font-size: 20px; margin: 0 0 4px; }
+  .board-desc { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 44px 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    transition: border-color .15s ease;
+  }
+  .row:hover { border-color: var(--teal); }
+  .row.rank-1 { border-color: var(--gold); background: linear-gradient(90deg, rgba(232,163,61,0.08), transparent); }
+
+  .rank {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .rank-1 .rank { color: var(--gold); }
+
+  .info .vtitle { font-size: 14.5px; font-weight: 600; margin-bottom: 3px; line-height: 1.3; }
+  .info .channel { font-size: 12.5px; color: var(--text-muted); }
+  .info .channel .subs { color: #565C6B; }
+
+  .metric { text-align: right; }
+  .metric .val { font-family: var(--font-mono); font-weight: 700; font-size: 15px; }
+  .metric .lbl { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .up { color: var(--teal); }
+  .hot { color: var(--coral); }
+
+  .bar-wrap { width: 90px; height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--coral)); border-radius: 2px; }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: #565C6B;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+  }
+
+  @media (max-width: 600px) {
+    .row { grid-template-columns: 32px 1fr auto; }
+    .row .bar-col { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker"></div>
+</div>
+
+<header>
+  <div class="eyebrow">Live &middot; last updated a few hours ago</div>
+  <h1>Who's <span>winning</span> right now.</h1>
+  <p class="sub">Not the biggest videos — the fastest ones. Pulse tracks view, like, and comment velocity across creators of every size to surface what's exploding before it's mainstream.</p>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<main>
+  <div class="board-title" id="board-title">Rising Now</div>
+  <div class="board-desc" id="board-desc">Ranked by raw view growth in the last 24 hours.</div>
+  <div id="rows"></div>
+</main>
+
+<footer>PULSE &middot; powered by the YouTube Data API &middot; momentum score normalized by channel size</footer>
+
+<script>
+const BOARDS = {
+  rising_now: {
+    label: "🚀 Rising Now",
+    desc: "Ranked by raw view growth in the last 24 hours.",
+    data: [
+      { rank: 1, title: "I Survived 100 Days as a Villager in Minecraft Hardcore", channel: "Kestrel Plays", subs: "312K", views: "4.2M", growth: "+512K", metric: "+512K views/24h", score: 96 },
+      { rank: 2, title: "This Recipe Broke the Internet (Butter Board 2.0)", channel: "Salt & Char", subs: "89K", views: "1.8M", growth: "+340K", metric: "+340K views/24h", score: 88 },
+      { rank: 3, title: "Reacting to My Old Cringe Videos", channel: "Anika Talks", subs: "1.1M", views: "6.9M", growth: "+298K", metric: "+298K views/24h", score: 74 },
+      { rank: 4, title: "The Physics of Skateboarding Explained", channel: "Loop Theory", subs: "204K", views: "980K", growth: "+201K", metric: "+201K views/24h", score: 69 },
+      { rank: 5, title: "24 Hours in the World's Smallest Apartment", channel: "Nomad Nia", subs: "56K", views: "610K", growth: "+178K", metric: "+178K views/24h", score: 65 },
+    ]
+  },
+  hidden_gems: {
+    label: "🌱 Hidden Gems",
+    desc: "Small channels (under 200K subs) with unusually high momentum scores.",
+    data: [
+      { rank: 1, title: "I Built a Working Elevator Out of LEGO", channel: "Bricks & Bolts", subs: "12K", views: "88K", growth: "+41K", metric: "momentum 94", score: 94 },
+      { rank: 2, title: "Street Food Tour: Bhopal After Dark", channel: "Wander Plate", subs: "8.4K", views: "52K", growth: "+29K", metric: "momentum 87", score: 87 },
+      { rank: 3, title: "Why Nobody Talks About This Chess Opening", channel: "Rook Takes", subs: "22K", views: "61K", growth: "+24K", metric: "momentum 79", score: 79 },
+      { rank: 4, title: "Restoring a 1970s Motorcycle (Ep. 3)", channel: "Rustworks", subs: "31K", views: "74K", growth: "+19K", metric: "momentum 71", score: 71 },
+    ]
+  },
+  most_viewed: {
+    label: "👑 Most Viewed",
+    desc: "Biggest videos by total view count, all-time within your tracked window.",
+    data: [
+      { rank: 1, title: "Official Trailer — Season 4", channel: "StreamCo Originals", subs: "18M", views: "142M", growth: "+1.1M", metric: "142M total", score: 100 },
+      { rank: 2, title: "World Cup Final Highlights", channel: "SportsCentral", subs: "9.4M", views: "98M", growth: "+640K", metric: "98M total", score: 91 },
+      { rank: 3, title: "New Album — Full Listen", channel: "Aria Records", subs: "22M", views: "76M", growth: "+2.3M", metric: "76M total", score: 85 },
+    ]
+  },
+  fan_favorite: {
+    label: "❤️ Fan Favorite",
+    desc: "Highest like-growth relative to channel size in the last 24 hours.",
+    data: [
+      { rank: 1, title: "I Let My Dog Pick My Outfits for a Week", channel: "Milo & Me", subs: "44K", views: "310K", growth: "+18K likes", metric: "engagement 92", score: 92 },
+      { rank: 2, title: "Answering Your Weirdest Questions", channel: "Ask Priya", subs: "120K", views: "540K", growth: "+22K likes", metric: "engagement 84", score: 84 },
+    ]
+  },
+  most_discussed: {
+    label: "💬 Most Discussed",
+    desc: "Fastest comment growth — where the conversation is happening right now.",
+    data: [
+      { rank: 1, title: "Debating the Ending of the Finale", channel: "Plot Armor", subs: "670K", views: "2.1M", growth: "+9.8K comments", metric: "comments/24h", score: 90 },
+      { rank: 2, title: "Unpopular Opinions About AI Art", channel: "Studio Notes", subs: "95K", views: "410K", growth: "+6.2K comments", metric: "comments/24h", score: 77 },
+    ]
+  }
+};
+
+const tabsEl = document.getElementById('tabs');
+const rowsEl = document.getElementById('rows');
+const titleEl = document.getElementById('board-title');
+const descEl = document.getElementById('board-desc');
+const tickerEl = document.getElementById('ticker');
+
+function renderTabs(active) {
+  tabsEl.innerHTML = '';
+  Object.entries(BOARDS).forEach(([key, board]) => {
+    const btn = document.createElement('div');
+    btn.className = 'tab' + (key === active ? ' active' : '');
+    btn.textContent = board.label;
+    btn.onclick = () => renderBoard(key);
+    tabsEl.appendChild(btn);
+  });
+}
+
+function renderBoard(key) {
+  const board = BOARDS[key];
+  titleEl.textContent = board.label.replace(/^[^\s]+\s/, '');
+  descEl.textContent = board.desc;
+  rowsEl.innerHTML = '';
+  board.data.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'row' + (item.rank === 1 ? ' rank-1' : '');
+    row.innerHTML = `
+      <div class="rank">${item.rank}</div>
+      <div class="info">
+        <div class="vtitle">${item.title}</div>
+        <div class="channel">${item.channel} <span class="subs">· ${item.subs} subs</span></div>
+      </div>
+      <div class="metric">
+        <div class="val up">${item.growth}</div>
+        <div class="lbl">${item.metric}</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-wrap"><div class="bar-fill" style="width:${item.score}%"></div></div>
+      </div>
+    `;
+    rowsEl.appendChild(row);
+  });
+  renderTabs(key);
+}
+
+function renderTicker() {
+  const items = BOARDS.rising_now.data.concat(BOARDS.hidden_gems.data.slice(0,2));
+  const html = items.map(i => `
+    <span class="ticker-item"><span class="dot"></span><span class="title">${i.title}</span><span class="delta">${i.growth}</span></span>
+  `).join('');
+  tickerEl.innerHTML = html + html; // duplicate for seamless loop
+}
+
+// --- Optional: wire to live API instead of sample data ---
+// async function loadLive(boardKey) {
+//   const res = await fetch(`http://localhost:5000/api/leaderboards/${boardKey}`);
+//   return res.json();
+// }
+
+renderTicker();
+renderBoard('rising_now');
+</script>
+
+</body>
+</html>
